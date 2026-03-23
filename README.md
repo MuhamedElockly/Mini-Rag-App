@@ -1,1 +1,3 @@
 # Mini-Rag-App
+
+## Requirements
