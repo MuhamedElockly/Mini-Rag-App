@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     FILE_ALLOWED_EXTENSIONS: list
     FILE_MAX_SIZE_MB: int
+    FiLE_DEFAULT_CHUNK_SIZE: int
     # python-dotenv: str
  
     class Config:

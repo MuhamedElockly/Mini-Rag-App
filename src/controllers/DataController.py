@@ -1,6 +1,8 @@
 
-
+import os
+import re
 from .BaseController import BaseController
+from .ProjectController import ProjectController
 from fastapi import UploadFile
 from models import ResponseEnum
 class DataController(BaseController):
@@ -14,4 +16,17 @@ class DataController(BaseController):
             return False ,ResponseEnum.FILE_SIZE_EXCEEDED
         return True , ResponseEnum.FILE_VALIDATION_SUCCESS
     
-    
+    def generate_unique_file_path(self,filename:str,project_id:str):
+        # random_name= self.generate_random_string(length=12)
+        random_name=filename
+        project_path=ProjectController().get_project_path(project_id=project_id)
+        clean_filename=self.get_clean_filename(filename=filename)
+        # new_file_path=os.path.join(project_path,random_name+"_"+clean_filename)
+        
+        return project_path, random_name+"_"+clean_filename
+    def get_clean_filename(self,filename:str):
+        
+        cleaned_filename=re.sub(r'[^a-zA-Z0-9_.-]', '_', filename.strip())
+        cleaned_filename=cleaned_filename.replace(' ', '_')
+
+        return cleaned_filename
