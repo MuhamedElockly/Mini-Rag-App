@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     FILE_ALLOWED_EXTENSIONS: list
     FILE_MAX_SIZE_MB: int
     FiLE_DEFAULT_CHUNK_SIZE: int
+    MONGO_URL: str
+    MONGO_DB_NAME: str
     # python-dotenv: str
  
     class Config:
