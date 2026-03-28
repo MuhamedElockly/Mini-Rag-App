@@ -1,4 +1,4 @@
-from fastapi import APIRouter, FastAPI,Depends,UploadFile,status
+from fastapi import APIRouter, FastAPI,Depends,UploadFile,status,Request
 from fastapi.responses import JSONResponse
 from helpers.config import get_settings, Settings
 from controllers import DataController, ProjectController,ProcessController
@@ -7,6 +7,8 @@ from models import ResponseEnum
 import aiofiles
 import logging
 from .schemas.data import ProcessRequest
+from models import ProjectModel
+
 logger= logging.getLogger('uvicorn.error')
 
 baseRouter = APIRouter(
@@ -15,7 +17,14 @@ baseRouter = APIRouter(
 )
 
 @baseRouter.post("/upload/{project_id}")
-async def upload_file(project_id: str, file: UploadFile):
+async def upload_file(request:Request,project_id: str, file: UploadFile):
+
+    project_model=ProjectModel(db_client=request.app.db_client)
+    project=await project_model.get_project_or_create_one(projct_id=project_id)
+
+
+
+
     data_controller = DataController()
     is_valid , res_message = data_controller.validate_file(file=file)
     if not is_valid:
@@ -33,7 +42,12 @@ async def upload_file(project_id: str, file: UploadFile):
         logger.error(f"Error uploading file: {str(e)}")
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"message": ResponseEnum.FILE_UPLOAD_FAILED.value, "error": str(e)})
 
-    return JSONResponse( content={"Message":    ResponseEnum.FILE_UPLOAD_SUCCESS.value , "File_Id": file_id})
+    return JSONResponse(
+         content={
+             "Message": ResponseEnum.FILE_UPLOAD_SUCCESS.value ,
+             "File_Id": file_id,
+             "Project_Id": str(project._id)
+             })
 
 @baseRouter.post("/process/{project_id}")
 async def process_endpoint(project_id: str, processRequest:ProcessRequest):
