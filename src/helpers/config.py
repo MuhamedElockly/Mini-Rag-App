@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     FiLE_DEFAULT_CHUNK_SIZE: int
     MONGO_URL: str
     MONGO_DB_NAME: str
+    MONGO_INITDB_ROOT_USERNAME: str
+    MONGO_INITDB_ROOT_PASSWORD: str
     # python-dotenv: str
  
     class Config:
